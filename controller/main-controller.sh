@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-myMacAddress="PHONE-MAC-ADDRESS";
+myMacAddress=`cat ../config/settings.ini | awk '/mac_address/{print $2}'`;
 
 function amIHome() {
-    threshHold=600
+    threshold=`cat ../config/settings.ini | awk '/threshold/{print $2}'`
+    threshold=600
 
     isHome=$1;
     lastRun=`cat ../log/log.txt | awk '/LASTRUN/{print $2}'`
     currentTime=$(date +%s);
     updateLastRunTime
 
-    if [ $((currentTime-lastRun)) -gt ${threshHold} ]; then
+    if [ $((currentTime-lastRun)) -gt ${threshold} ]; then
         resetLog ${currentTime}
     fi
 
@@ -29,7 +30,7 @@ function amIHome() {
             # run action
             actuallyHome
         else
-            ../actions/still-home.sh
+            ./still-home-controller.sh
         fi
     else
         # Network says I am away - have I been away the whole time?
@@ -37,25 +38,25 @@ function amIHome() {
             # Log says it that it ain't no snitch and it ain't telling us shit - So we don't tell the log shit neither
             # Wait till I've been away for more than threshold to run
             lastAway=`cat ../log/log.txt | awk '/LASTAWAY/{print $2}'`
-            if [ $((currentTime-lastAway)) -gt ${threshHold} ]; then
+            if [ $((currentTime-lastAway)) -gt ${threshold} ]; then
                 logTime ${isHome} ${currentTime}
                 actuallyAway
             else
-                ../actions/might-be-away.sh
+                ./might-be-away-controller.sh
             fi
         elif [ ${homeTheWholeTime} -eq 1 ]; then
             # Tell the log I am away
             logTime ${isHome} ${currentTime}
             # Log says I was just here a second ago - Wait till I've not been seen for longer than threshold to run
             lastHome=`cat ../log/log.txt | awk '/LASTHOME/{print $2}'`
-            if [ $((currentTime-lastHome)) -gt ${threshHold} ]; then
+            if [ $((currentTime-lastHome)) -gt ${threshold} ]; then
                 actuallyAway
             else
-                ../actions/might-be-away.sh
+                ./might-be-away-controller.sh
             fi
         else
             logTime ${isHome} ${currentTime}
-            ../actions/still-away.sh
+            ./still-away-controller.sh
         fi
 
     fi
@@ -89,12 +90,12 @@ function logTime {
 
 function actuallyHome {
     setHome "1"
-    ../actions/home.sh
+    ./home-controller.sh
 }
 
 function actuallyAway {
     setHome "0"
-    ../actions/away.sh
+    ./away-controller.sh
 }
 
 function setHome {
