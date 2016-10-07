@@ -6,7 +6,6 @@ function amIHome() {
     threshHold=200
 
     isHome=$1;
-    isHome=true;
     homeTheWholeTime=`cat ../log/log.txt | awk '/CURRENTLYHOME/{print $2}'`
     lastRun=`cat ../log/log.txt | awk '/LASTRUN/{print $2}'`
     currentTime=$(date +%s);
