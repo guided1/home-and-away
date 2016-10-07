@@ -3,15 +3,15 @@
 myMacAddress=`cat ../config/settings.ini | awk '/mac_address/{print $2}'`;
 
 function amIHome() {
-    threshold=`cat ../config/settings.ini | awk '/threshold/{print $2}'`
-    threshold=600
+    threshold=`cat ../config/settings.ini | awk '/^threshold/{print $2}'`
+    resetThreshold=`cat ../config/settings.ini | awk '/^reset_threshold/{print $2}'`
 
     isHome=$1;
     lastRun=`cat ../log/log.txt | awk '/LASTRUN/{print $2}'`
     currentTime=$(date +%s);
     updateLastRunTime
 
-    if [ $((currentTime-lastRun)) -gt ${threshold} ]; then
+    if [ $((currentTime-lastRun)) -gt ${resetThreshold} ]; then
         resetLog ${currentTime}
     fi
 
