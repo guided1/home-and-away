@@ -67,12 +67,12 @@ function amIHome() {
 function resetLog {
     currentTime=$1;
 #    echo "resetting log at ${currentTime}"
-    sed -i '' "s/\(TIME: \).*/\1${currentTime}/" ../log/log.txt
+    sed -i "s/\(TIME: \).*/\1${currentTime}/" ../log/log.txt
     setHome "-1"
 }
 
 function updateLastRunTime {
-    sed -i '' "s/^\(LASTRUNTIME: \).*/\1${currentTime}/" ../log/log.txt
+    sed -i "s/^\(LASTRUNTIME: \).*/\1${currentTime}/" ../log/log.txt
 }
 
 # Logs the last time we were home, away and last time the script was run
@@ -84,7 +84,7 @@ function logTime {
         logLine="LASTHOMETIME"
     fi
 #    echo "logging ${isHome} at ${currentTime}";
-    sed -i '' "s/^\(${logLine}: \).*/\1${currentTime}/" ../log/log.txt
+    sed -i "s/^\(${logLine}: \).*/\1${currentTime}/" ../log/log.txt
 }
 
 
@@ -101,7 +101,7 @@ function actuallyAway {
 function setHome {
     value=$1
 #    echo "setting home with value ${value}";
-    sed -i '' "s/^\(CURRENTLYHOME: \).*/\1${value}/" ../log/log.txt
+    sed -i "s/^\(CURRENTLYHOME: \).*/\1${value}/" ../log/log.txt
 }
 
 isHome=false;
