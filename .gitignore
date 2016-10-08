@@ -1,2 +1,3 @@
 config/settings.ini
 scripts/*.sh
+log/log.txt
